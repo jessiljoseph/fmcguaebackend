@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import ListingCategory, Packages, Testimonial
-from .serializers import CategorySerializer, PackageSerializer, TestimonialSerializer
+from .models import ListingCategory, Packages, Partner, Testimonial
+from .serializers import CategorySerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
 
 
 class AllCategoriesView(generics.ListAPIView):
@@ -15,4 +15,6 @@ class TestimonialListView(generics.ListAPIView):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer
 
-    #testmonial
+class PartnerListView(generics.ListAPIView):
+    queryset = Partner.objects.all()
+    serializer_class = PartnerSerializer

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AllCategoriesView, PackageCreateView, TestimonialListView
+from .views import AllCategoriesView, PackageCreateView, PartnerListView, TestimonialListView
 from django.conf.urls.static import static
 
 from fmcguae import settings
@@ -8,6 +8,8 @@ urlpatterns = [
     path('api/categories/all/', AllCategoriesView.as_view(), name='all_categories'),
     path('api/package/', PackageCreateView.as_view(), name='packages'),
     path('api/testimonials/', TestimonialListView.as_view(), name='testimonial_list'),
+    path('api/partners/', PartnerListView.as_view(), name='partner_list'),
+
 
 ]
 if settings.DEBUG:

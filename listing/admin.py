@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (
-    Country, State, ListingIso, ListingCategory, Keywords, ListingBrands, Packages,
+    Country, Partner, State, ListingIso, ListingCategory, Keywords, ListingBrands, Packages,
     Organization, ListingReviews, ListingEnquiry, Advertisements, Insight, Testimonial
 )
 
@@ -99,6 +99,8 @@ class TestimonialAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('name', 'position', 'description', 'created', 'updated')
 
 
-
+@admin.register(Partner)
+class PartnerAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('logo',)
 
 

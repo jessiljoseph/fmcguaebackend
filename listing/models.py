@@ -232,3 +232,10 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Partner(models.Model):
+    logo = models.ImageField(upload_to='partners/logos/', null=True, blank=True)  
+
+    def __str__(self):
+        return f"Partner Logo {self.id}"
