@@ -14,3 +14,5 @@ class PackageCreateView(generics.ListAPIView):
 class TestimonialListView(generics.ListAPIView):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer
+
+    #testmonial
