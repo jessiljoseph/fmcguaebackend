@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ListingCategory, Packages, Partner, Testimonial
+from .models import Insight, ListingCategory, Packages, Partner, Testimonial
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -24,3 +24,10 @@ class PartnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Partner
         fields = ['logo', ]        
+
+
+class InsightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Insight
+        fields = ['organization', 'category', 'title', 'image', 'description', 'created', 'updated']
+        

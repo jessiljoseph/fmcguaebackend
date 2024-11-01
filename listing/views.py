@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import ListingCategory, Packages, Partner, Testimonial
-from .serializers import CategorySerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
+from .models import Insight, ListingCategory, Packages, Partner, Testimonial
+from .serializers import CategorySerializer, InsightSerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
 
 
 class AllCategoriesView(generics.ListAPIView):
@@ -18,3 +18,11 @@ class TestimonialListView(generics.ListAPIView):
 class PartnerListView(generics.ListAPIView):
     queryset = Partner.objects.all()
     serializer_class = PartnerSerializer
+
+class InsightListView(generics.ListAPIView):
+    queryset = Insight.objects.filter(status='approved').order_by('-created')
+    serializer_class = InsightSerializer    
+
+class InsightsDetailView(generics.RetrieveAPIView):
+    queryset = Insight.objects.all
+    serializer_class = InsightSerializer  
