@@ -27,7 +27,11 @@ class PartnerSerializer(serializers.ModelSerializer):
 
 
 class InsightSerializer(serializers.ModelSerializer):
+    organization_logo = serializers.SerializerMethodField()  
+
     class Meta:
         model = Insight
-        fields = ['organization', 'category', 'title', 'image', 'description', 'created', 'updated']
-        
+        fields = ['organization_logo', 'category', 'title', 'image', 'description', 'created', 'updated', 'slug']
+
+    def get_organization_logo(self, obj):
+        return obj.organization.logo.url if obj.organization and obj.organization.logo else None
