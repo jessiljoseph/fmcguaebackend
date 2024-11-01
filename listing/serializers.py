@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Insight, ListingCategory, Packages, Partner, Testimonial
-
+from .models import Insight, ListingCategory, Organization, Packages, Partner, Testimonial
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,15 +22,17 @@ class TestimonialSerializer(serializers.ModelSerializer):
 class PartnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Partner
-        fields = ['logo', ]        
+        fields = ['logo', ]       
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = '__all__'         
 
 
 class InsightSerializer(serializers.ModelSerializer):
-    organization_logo = serializers.SerializerMethodField()  
-
+    organization = OrganizationSerializer()
     class Meta:
         model = Insight
-        fields = ['organization_logo', 'category', 'title', 'image', 'description', 'created', 'updated', 'slug']
+        fields = ['organization', 'category', 'title', 'image', 'description', 'created', 'updated', 'slug']
 
-    def get_organization_logo(self, obj):
-        return obj.organization.logo.url if obj.organization and obj.organization.logo else None

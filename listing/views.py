@@ -24,6 +24,7 @@ class InsightListView(generics.ListAPIView):
     serializer_class = InsightSerializer    
 
 class InsightsDetailView(generics.RetrieveAPIView):
-    queryset = Insight.objects.all
-    serializer_class = InsightSerializer  
     lookup_field = 'slug'  
+    queryset = Insight.objects.all()
+    serializer_class = InsightSerializer
+
