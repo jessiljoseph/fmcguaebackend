@@ -1,6 +1,6 @@
-from rest_framework import generics
-from .models import Insight, ListingCategory, Packages, Partner, Testimonial
-from .serializers import CategorySerializer, InsightSerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
+from rest_framework import generics, viewsets
+from .models import Insight, ListingCategory, Organization, Packages, Partner, Testimonial
+from .serializers import CategorySerializer, InsightSerializer, OrganizationSerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
 
 
 class AllCategoriesView(generics.ListAPIView):
@@ -11,6 +11,14 @@ class PackageCreateView(generics.ListAPIView):
     queryset = Packages.objects.all()
     serializer_class = PackageSerializer
 
+
+class OrganizationViewSet(viewsets.ModelViewSet):
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        
 class TestimonialListView(generics.ListAPIView):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer
