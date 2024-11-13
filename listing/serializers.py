@@ -26,6 +26,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = '__all__'    
 
 class OrganizationSerializer(serializers.ModelSerializer):
+    package_id = serializers.PrimaryKeyRelatedField(queryset=Packages.objects.all(), source='package')
     class Meta:
         model = Organization
         fields = [
@@ -38,7 +39,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
             'contact_person_name', 'contact_person_email', 'contact_person_mobile', 
             'facebook', 'twitter', 'linkedin', 'instagram', 'youtube', 
             'verified', 'supplier', 'distributor', 
-            'start_date', 'end_date', 'slug', 'created_at', 'updated_at'
+            'start_date', 'end_date', 'slug', 'created_at', 'updated_at','package_id'
         ]
         read_only_fields = ['created_at', 'updated_at']
 
@@ -61,7 +62,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Packages
-        fields = ['name', 'price', 'features']
+        fields = ['id','name', 'price', 'features']
 
 
 class TestimonialSerializer(serializers.ModelSerializer):
