@@ -1,3 +1,6 @@
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail 
 from rest_framework import generics, viewsets
 from .models import Insight, ListingCategory, Organization, Packages, Partner, Testimonial
 from .serializers import CategorySerializer, InsightSerializer, OrganizationSerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
@@ -18,7 +21,28 @@ class OrganizationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-        
+        # Prepare dynamic data for the template
+        dynamic_data = {
+            "company_name": Organization.company_name,
+        }
+
+        # Set up the email with SendGrid
+        message = Mail(
+            from_email='no-reply@yourdomain.com',
+            to_emails=Organization.company_email,
+            subject=f"Welcome to Our Platform, {Organization.company_name}",
+            html_content='<strong>Thank you for joining us!</strong>'
+        )
+
+        message.dynamic_template_data = dynamic_data
+        message.template_id = 'YOUR_SENDGRID_TEMPLATE_ID'
+
+        try:
+            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+            sg.send(message)
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            
 class TestimonialListView(generics.ListAPIView):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer

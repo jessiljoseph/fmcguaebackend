@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Insight, ListingCategory, Organization, Packages, Partner, Testimonial
+from .models import Insight, Keywords, ListingBrands, ListingCategory, Organization, Packages, Partner, Testimonial
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,7 +7,20 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['name', 'image']
 
 
+class KeywordsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Keywords
+        fields = ['id', 'name', 'seo_title', 'seo_description', 'slug', 'section']
+
+class ListingBrandsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListingBrands
+        fields = ['id', 'name', 'seo_title', 'seo_description', 'slug']        
+
 class OrganizationSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=ListingCategory.objects.all(), many=True)
+    keywords = KeywordsSerializer(many=True)
+    brands = ListingBrandsSerializer(many=True)
     class Meta:
         model = Organization
         fields = '__all__'    
@@ -28,6 +41,22 @@ class OrganizationSerializer(serializers.ModelSerializer):
             'start_date', 'end_date', 'slug', 'created_at', 'updated_at'
         ]
         read_only_fields = ['created_at', 'updated_at']
+
+    def create(self, validated_data):
+        keywords_data = validated_data.pop('keywords')
+        brands_data = validated_data.pop('brands')
+        organization = Organization.objects.create(**validated_data)
+        
+        # Create many-to-many relationships manually
+        for keyword_data in keywords_data:
+            keyword = Keywords.objects.create(**keyword_data)
+            organization.keywords.add(keyword)
+        
+        for brand_data in brands_data:
+            brand = ListingBrands.objects.create(**brand_data)
+            organization.brands.add(brand)
+        
+        return organization
 
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:

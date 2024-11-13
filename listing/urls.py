@@ -15,8 +15,7 @@ urlpatterns = [
     path('api/insights/', InsightListView.as_view(), name='insight_list'),
     path('api/insights/<slug:slug>/', InsightsDetailView.as_view(), name='insight_detail'),
     path('api/', include(router.urls)),
-
-
+    
 ]
 if settings.DEBUG:
    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
