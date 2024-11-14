@@ -128,6 +128,7 @@ class Organization(models.Model):
     verified = models.CharField(max_length=25, choices=YES_NO_CHOICE)
     supplier = models.CharField(max_length=25, choices=YES_NO_CHOICE)
     distributor = models.CharField(max_length=25, choices=YES_NO_CHOICE)
+    manufacturer = models.CharField(max_length=25, choices=YES_NO_CHOICE)
 
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
