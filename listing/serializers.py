@@ -29,34 +29,29 @@ class OrganizationSerializer(serializers.ModelSerializer):
     brands = ListingBrandsSerializer(many=True)
 
     package_id = serializers.PrimaryKeyRelatedField(queryset=Packages.objects.all(), source='package')
-
-    username = serializers.CharField(max_length=150)
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    user_username = serializers.CharField(source='user.username', read_only=True)  
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'}) 
 
     class Meta:
         model = Organization
         fields = [
-            'username', 'password', 'user', 'package', 'logo', 'banner', 'brochure',
-            'category', 'keywords', 'brands',
+            'user_username', 'password', 'user', 'package', 'logo', 'banner', 'brochure',
+            'category', 'keywords', 'brands', 
             'company_name', 'company_email', 'company_mobile', 'company_fax',
-            'company_whatsapp', 'company_description', 'address', 'building_no',
-            'street', 'area', 'po_box', 'city', 'state', 'country',
-            'website', 'google_map_url', 'iso',
+            'company_whatsapp', 'company_description', 'address', 'building_no', 
+            'street', 'area', 'po_box', 'city', 'state', 'country', 
+            'website', 'google_map_url', 'iso', 
             'contact_person_name', 'contact_person_email', 'contact_person_mobile',
-            'facebook', 'twitter', 'linkedin', 'instagram', 'youtube',
-            'verified', 'supplier', 'distributor',
+            'facebook', 'twitter', 'linkedin', 'instagram', 'youtube', 
+            'verified', 'supplier', 'distributor', 
             'start_date', 'end_date', 'slug', 'created_at', 'updated_at', 'package_id'
         ]
         read_only_fields = ['created_at', 'updated_at']
 
     def create(self, validated_data):
-        username = validated_data.pop('username')
         password = validated_data.pop('password')
-
-        user = User.objects.create_user(username=username, password=password)
-        
+        user = User.objects.create_user(username=validated_data['user'].username, password=password)
         organization = Organization.objects.create(user=user, **validated_data)
-
         keywords_data = validated_data.pop('keywords', [])
         brands_data = validated_data.pop('brands', [])
         
@@ -69,10 +64,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
             organization.brands.add(brand)
 
         return organization
-    
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    confirm_password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)  # Password field
+    confirm_password = serializers.CharField(write_only=True)  # Confirm password field
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
     email = serializers.EmailField(max_length=255)
@@ -92,19 +88,21 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Create a new user, and link it with the organization if provided.
+        Create a new user and link to an organization if provided.
         """
-        password = validated_data.pop('password') 
+        password = validated_data.pop('password')  # Password is already validated, so pop it
         user = User.objects.create_user(**validated_data)  # Create the user
-        user.set_password(password)
+        user.set_password(password)  # Hash the password
         user.save()
 
+        # Link to organization if provided
         organization = validated_data.get('organization_id', None)
         if organization:
             organization.user = user
             organization.save()
 
         return user
+
         
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
