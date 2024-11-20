@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AllCategoriesView, InsightListView, InsightsDetailView, OrganizationViewSet, PackageCreateView, PartnerListView, TestimonialListView
+from .views import AllCategoriesView, InsightListView, InsightsDetailView, OrganizationViewSet, PackageCreateView, PartnerListView, TestimonialListView, UserRegistrationView
 from django.conf.urls.static import static
 
 from fmcguae import settings
@@ -15,6 +15,8 @@ urlpatterns = [
     path('api/insights/', InsightListView.as_view(), name='insight_list'),
     path('api/insights/<slug:slug>/', InsightsDetailView.as_view(), name='insight_detail'),
     path('api/', include(router.urls)),
+    path('api/register/', UserRegistrationView.as_view(), name='user_register'),
+
     
 ]
 if settings.DEBUG:

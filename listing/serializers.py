@@ -1,6 +1,12 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
+from rest_framework import status, generics
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from .models import Insight, Keywords, ListingBrands, ListingCategory, Organization, Packages, Partner, Testimonial
 
+
+    
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingCategory
@@ -21,34 +27,39 @@ class OrganizationSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=ListingCategory.objects.all(), many=True)
     keywords = KeywordsSerializer(many=True)
     brands = ListingBrandsSerializer(many=True)
-    class Meta:
-        model = Organization
-        fields = '__all__'    
 
-class OrganizationSerializer(serializers.ModelSerializer):
     package_id = serializers.PrimaryKeyRelatedField(queryset=Packages.objects.all(), source='package')
+
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
     class Meta:
         model = Organization
         fields = [
-            'user', 'package', 'logo', 'banner', 'brochure', 
-            'category', 'keywords', 'brands', 
-            'company_name', 'company_email', 'company_mobile', 'company_fax', 
-            'company_whatsapp', 'company_description', 'address', 'building_no', 
-            'street', 'area', 'po_box', 'city', 'state', 'country', 
-            'website', 'google_map_url', 'iso', 
-            'contact_person_name', 'contact_person_email', 'contact_person_mobile', 
-            'facebook', 'twitter', 'linkedin', 'instagram', 'youtube', 
-            'verified', 'supplier', 'distributor', 
-            'start_date', 'end_date', 'slug', 'created_at', 'updated_at','package_id'
+            'username', 'password', 'user', 'package', 'logo', 'banner', 'brochure',
+            'category', 'keywords', 'brands',
+            'company_name', 'company_email', 'company_mobile', 'company_fax',
+            'company_whatsapp', 'company_description', 'address', 'building_no',
+            'street', 'area', 'po_box', 'city', 'state', 'country',
+            'website', 'google_map_url', 'iso',
+            'contact_person_name', 'contact_person_email', 'contact_person_mobile',
+            'facebook', 'twitter', 'linkedin', 'instagram', 'youtube',
+            'verified', 'supplier', 'distributor',
+            'start_date', 'end_date', 'slug', 'created_at', 'updated_at', 'package_id'
         ]
         read_only_fields = ['created_at', 'updated_at']
 
     def create(self, validated_data):
-        keywords_data = validated_data.pop('keywords')
-        brands_data = validated_data.pop('brands')
-        organization = Organization.objects.create(**validated_data)
+        username = validated_data.pop('username')
+        password = validated_data.pop('password')
+
+        user = User.objects.create_user(username=username, password=password)
         
-        # Create many-to-many relationships manually
+        organization = Organization.objects.create(user=user, **validated_data)
+
+        keywords_data = validated_data.pop('keywords', [])
+        brands_data = validated_data.pop('brands', [])
+        
         for keyword_data in keywords_data:
             keyword = Keywords.objects.create(**keyword_data)
             organization.keywords.add(keyword)
@@ -56,9 +67,19 @@ class OrganizationSerializer(serializers.ModelSerializer):
         for brand_data in brands_data:
             brand = ListingBrands.objects.create(**brand_data)
             organization.brands.add(brand)
-        
-        return organization
 
+        return organization
+    
+
+
+
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = OrganizationSerializer
+    permission_classes = [AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+        
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Packages
