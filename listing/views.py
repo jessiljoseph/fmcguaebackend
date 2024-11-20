@@ -1,6 +1,7 @@
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail 
+from rest_framework.permissions import AllowAny
 from rest_framework import generics, viewsets
 from .models import Insight, ListingCategory, Organization, Packages, Partner, Testimonial
 from .serializers import CategorySerializer, InsightSerializer, OrganizationSerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
@@ -42,6 +43,14 @@ class OrganizationViewSet(viewsets.ModelViewSet):
             sg.send(message)
         except Exception as e:
             print(f"Error sending email: {e}")
+
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = OrganizationSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        # Handle additional logic here if needed (e.g., email verification)
+        return super().create(request, *args, **kwargs)            
             
 class TestimonialListView(generics.ListAPIView):
     queryset = Testimonial.objects.all()

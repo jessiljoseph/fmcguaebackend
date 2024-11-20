@@ -70,15 +70,41 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
         return organization
     
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(max_length=100)
+    last_name = serializers.CharField(max_length=100)
+    email = serializers.EmailField(max_length=255)
+    organization_id = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), required=False)
 
-
-
-class UserRegistrationView(generics.CreateAPIView):
-    serializer_class = OrganizationSerializer
-    permission_classes = [AllowAny]
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'confirm_password', 'first_name', 'last_name', 'email', 'organization_id']
     
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+    def validate(self, data):
+        """
+        Validate that password and confirm_password match.
+        """
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("Passwords must match.")
+        return data
+
+    def create(self, validated_data):
+        """
+        Create a new user, and link it with the organization if provided.
+        """
+        password = validated_data.pop('password') 
+        user = User.objects.create_user(**validated_data)  # Create the user
+        user.set_password(password)
+        user.save()
+
+        organization = validated_data.get('organization_id', None)
+        if organization:
+            organization.user = user
+            organization.save()
+
+        return user
         
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
