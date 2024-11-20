@@ -1,8 +1,5 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework import status, generics
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from .models import Insight, Keywords, ListingBrands, ListingCategory, Organization, Packages, Partner, Testimonial
 
 
