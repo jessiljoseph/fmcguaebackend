@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register(r'organizations', OrganizationViewSet, basename='organization')
 
 urlpatterns = [
-    path('api/categories/all/', AllCategoriesView.as_view(), name='all_categories'),
+    path('api/categories/<slug:slug>/', AllCategoriesView.as_view(), name='all_categories'),
     path('api/package/', PackageCreateView.as_view(), name='packages'),
     path('api/testimonials/', TestimonialListView.as_view(), name='testimonial_list'),
     path('api/partners/', PartnerListView.as_view(), name='partner_list'),

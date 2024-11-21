@@ -7,7 +7,7 @@ from .models import Insight, Keywords, ListingBrands, ListingCategory, Organizat
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingCategory
-        fields = ['name', 'image']
+        fields = ['name', 'image', 'slug']
 
 
 class KeywordsSerializer(serializers.ModelSerializer):
