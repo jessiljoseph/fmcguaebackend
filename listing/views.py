@@ -6,10 +6,14 @@ from rest_framework import generics, viewsets
 from .models import Insight, ListingCategory, Organization, Packages, Partner, Testimonial
 from .serializers import CategorySerializer, InsightSerializer, OrganizationSerializer, PackageSerializer, PartnerSerializer, TestimonialSerializer
 
-
-class AllCategoriesView(generics.ListAPIView):
+class CategoryListView(generics.ListAPIView):
     queryset = ListingCategory.objects.all()
     serializer_class = CategorySerializer
+
+class CategoryDetailView(generics.RetrieveAPIView):
+    queryset = ListingCategory.objects.all()
+    serializer_class = CategorySerializer
+    lookup_field = 'slug'  
 
 class PackageCreateView(generics.ListAPIView):
     queryset = Packages.objects.all()

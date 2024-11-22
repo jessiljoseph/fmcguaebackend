@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'listing',
     'products',
-    'users',
+    'user_dashboard',
     'rest_framework',
     'import_export',
     'corsheaders',
@@ -143,4 +143,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'auth.User'  # Default user model

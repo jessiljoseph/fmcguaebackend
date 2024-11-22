@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AllCategoriesView, InsightListView, InsightsDetailView, OrganizationViewSet, PackageCreateView, PartnerListView, TestimonialListView, UserRegistrationView
+from .views import CategoryDetailView, CategoryListView, InsightListView, InsightsDetailView, OrganizationViewSet, PackageCreateView, PartnerListView, TestimonialListView, UserRegistrationView
 from django.conf.urls.static import static
 
 from fmcguae import settings
@@ -8,7 +8,8 @@ router = DefaultRouter()
 router.register(r'organizations', OrganizationViewSet, basename='organization')
 
 urlpatterns = [
-    path('api/categories/<slug:slug>/', AllCategoriesView.as_view(), name='all_categories'),
+    path('api/categories/', CategoryListView.as_view(), name='category_list'),
+    path('api/categories/<slug:slug>/', CategoryDetailView.as_view(), name='category_detail'),    
     path('api/package/', PackageCreateView.as_view(), name='packages'),
     path('api/testimonials/', TestimonialListView.as_view(), name='testimonial_list'),
     path('api/partners/', PartnerListView.as_view(), name='partner_list'),

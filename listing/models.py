@@ -1,9 +1,7 @@
 from ckeditor.fields import RichTextField
 from django.db import models
 from django.utils.text import slugify
-
-from users.models import User
-
+from django.contrib.auth.models import User
 
 class Country(models.Model):
     name = models.CharField(max_length=255)
@@ -84,7 +82,7 @@ class Organization(models.Model):
         ('YES', 'YES'),
         ('NO', 'NO'),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     package = models.ForeignKey(Packages, on_delete=models.CASCADE, null=True, blank=True)
 
     logo = models.FileField(upload_to='Organization/Logo')

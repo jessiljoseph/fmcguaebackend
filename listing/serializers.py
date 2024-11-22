@@ -1,13 +1,12 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from .models import Insight, Keywords, ListingBrands, ListingCategory, Organization, Packages, Partner, Testimonial
-
+from django.contrib.auth.models import User
 
     
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingCategory
-        fields = ['name', 'image', 'slug']
+        fields = ['id', 'name', 'image', 'slug', 'seo_title', 'seo_description', 'image_alt', 'created', 'updated']
 
 
 class KeywordsSerializer(serializers.ModelSerializer):
