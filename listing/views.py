@@ -24,30 +24,6 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-        # Prepare dynamic data for the template
-        dynamic_data = {
-            "company_name": Organization.company_name,
-        }
-
-        # Set up the email with SendGrid
-        message = Mail(
-            from_email='no-reply@yourdomain.com',
-            to_emails=Organization.company_email,
-            subject=f"Welcome to Our Platform, {Organization.company_name}",
-            html_content='<strong>Thank you for joining us!</strong>'
-        )
-
-        message.dynamic_template_data = dynamic_data
-        message.template_id = 'YOUR_SENDGRID_TEMPLATE_ID'
-
-        try:
-            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
-            sg.send(message)
-        except Exception as e:
-            print(f"Error sending email: {e}")
-
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = OrganizationSerializer
     permission_classes = [AllowAny]

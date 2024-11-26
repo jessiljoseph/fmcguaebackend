@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
+from listing.models import ListingCategory
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -16,3 +18,8 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("User account is disabled.")
         
         return {"user": user}
+
+class ListingCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListingCategory
+        fields = '__all__'

@@ -3,14 +3,14 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
-from listing.models import Country, State, ListingIso, ListingCategory, Keywords, ListingBrands, Packages, Organization, \
+from listing.models import ListingCategory, Keywords, ListingBrands, Packages, Organization, \
     ListingReviews, ListingEnquiry, Advertisements, Insight
 from products.models import ProductCategory, ProductEnquriy, Product, ProductImage, ProductReviews
 from .serializers import (
-    CountrySerializer, AdminLoginSerializer, StateSerializer, ListingIsoSerializer, ListingCategorySerializer,
+    AdminLoginSerializer, ListingCategorySerializer,
     KeywordsSerializer, ListingBrandsSerializer, PackagesSerializer, OrganizationSerializer, ListingReviewsSerializer,
     ListingEnquirySerializer, AdvertisementsSerializer, ProductCategorySerializer, ProductEnquirySerializer,
     ProductSerializer, ProductImageSerializer, ProductReviewsSerializer, InsightSerializer
@@ -39,70 +39,6 @@ class AdminLogoutView(APIView):
         request.user.auth_token.delete()
         return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
 
-# Country Admin Api
-
-class CountryListView(generics.ListAPIView):
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
-   
-class CountryCreateView(generics.CreateAPIView):
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
-   
-
-class CountryUpdateView(generics.UpdateAPIView):
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
-   
-
-class CountryDeleteView(generics.DestroyAPIView):
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
-    
-
-
-#state api
-class StateListView(generics.ListAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-  
-
-class StateCreateView(generics.CreateAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-   
-
-class StateUpdateView(generics.UpdateAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-   
-
-class StateDeleteView(generics.DestroyAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-    
-
-
-# List all ListingIso entries
-class ListingIsoListView(generics.ListAPIView):
-    queryset = ListingIso.objects.all()
-    serializer_class = ListingIsoSerializer
-
-
-class ListingIsoCreateView(generics.CreateAPIView):
-    queryset = ListingIso.objects.all()
-    serializer_class = ListingIsoSerializer
-
-
-class ListingIsoUpdateView(generics.UpdateAPIView):
-    queryset = ListingIso.objects.all()
-    serializer_class = ListingIsoSerializer
-
-
-class ListingIsoDeleteView(generics.DestroyAPIView):
-    queryset = ListingIso.objects.all()
-    serializer_class = ListingIsoSerializer
-    
 
 # List all ListingCategory entries
 class ListingCategoryListView(generics.ListAPIView):

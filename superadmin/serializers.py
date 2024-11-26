@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from listing.models import Country, State, ListingIso, ListingCategory, Keywords, ListingBrands, Packages, Organization, \
+from listing.models import ListingCategory, Keywords, ListingBrands, Packages, Organization, \
     ListingReviews, ListingEnquiry, Advertisements, Insight
 from products.models import ProductCategory, Product, ProductImage, ProductReviews, ProductEnquriy
 
@@ -8,24 +8,7 @@ class AdminLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True, max_length=128, style={'input_type': 'password'})
 
-class CountrySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Country
-        fields = '__all__'
-
-
-class StateSerializer(serializers.ModelSerializer):
-    country_name = serializers.SerializerMethodField()
-    class Meta:
-        model = State
-        fields = '__all__'
-    def get_country_name(self, obj):    
-        return obj.country.name if obj.country else None
  
-class ListingIsoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ListingIso
-        fields = ['id', 'name']
 
 class ListingCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,8 +55,6 @@ class ListingEnquirySerializer(serializers.ModelSerializer):
 
     def get_organization_name(self, obj):
         return obj.organization.company_name if obj.organization else None
-
-
 
 class AdvertisementsSerializer(serializers.ModelSerializer):
     organization_name = serializers.SerializerMethodField()

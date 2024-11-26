@@ -3,10 +3,7 @@ from django.conf.urls.static import static
 
 
 from fmcguae import settings
-from superadmin.views import CountryListView, CountryCreateView, CountryUpdateView, \
-    CountryDeleteView, AdminLoginView, AdminLogoutView, StateListView, StateCreateView, StateUpdateView, \
-    StateDeleteView, ListingIsoListView, ListingIsoCreateView, ListingIsoUpdateView, \
-    ListingIsoDeleteView, ListingCategoryListView, ListingCategoryCreateView, ListingCategoryUpdateView, \
+from superadmin.views import AdminLoginView, AdminLogoutView , ListingCategoryListView, ListingCategoryCreateView, ListingCategoryUpdateView, \
     ListingCategoryDeleteView, KeywordsListView, KeywordsCreateView, KeywordsDeleteView, KeywordsUpdateView, \
     ListingBrandsDeleteView, ListingBrandsListView, ListingBrandsCreateView, ListingBrandsUpdateView, \
     PackagesCreateView, PackagesListView, PackagesUpdateView, PackagesDeleteView, OrganizationListView, \
@@ -26,21 +23,6 @@ from .views import (
 urlpatterns = [
     path('api/login/', AdminLoginView.as_view(), name='admin.login'),
     path('api/logout/', AdminLogoutView.as_view(), name='admin.logout'),
-
-    path('api/countries/list/', CountryListView.as_view(), name='admin.country_list'),
-    path('api/countries/create/', CountryCreateView.as_view(), name='admin.country_create'),
-    path('api/countries/update/<int:pk>/', CountryUpdateView.as_view(), name='admin.country_update'),
-    path('api/countries/delete/<int:pk>/', CountryDeleteView.as_view(), name='admin.country_delete'),
-
-    path('api/state/list/', StateListView.as_view(), name='admin.state_list'),
-    path('api/state/create/', StateCreateView.as_view(), name='admin.state_create'),
-    path('api/state/update/<int:pk>/', StateUpdateView.as_view(), name='admin.state_update'),
-    path('api/state/delete/<int:pk>/', StateDeleteView.as_view(), name='admin.state_delete'),
-
-    path('api/listing_iso/list/', ListingIsoListView.as_view(), name='admin.listing_iso_list'),
-    path('api/listing_iso/create/', ListingIsoCreateView.as_view(), name='admin.listing_iso_create'),
-    path('api/listing_iso/update/<int:pk>/', ListingIsoUpdateView.as_view(), name='admin.listing_iso_update'),
-    path('api/listing_iso/delete/<int:pk>/', ListingIsoDeleteView.as_view(), name='admin.listing_iso_delete'),
 
     path('api/listing_category/list/', ListingCategoryListView.as_view(), name='admin.listing_category_list'),
     path('api/listing_category/create/', ListingCategoryCreateView.as_view(), name='admin.listing_category_create'),

@@ -1,33 +1,11 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (
-    Country, Partner, State, ListingIso, ListingCategory, Keywords, ListingBrands, Packages,
+    Partner, ListingCategory, Keywords, ListingBrands, Packages,
     Organization, ListingReviews, ListingEnquiry, Advertisements, Insight, Testimonial
 )
 
-# Register Country Model
-@admin.register(Country)
-class CountryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
 
-
-# Register State Model
-@admin.register(State)
-class StateAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'country')
-    search_fields = ('name',)
-    list_filter = ('country',)
-
-
-# Register ListingIso Model
-@admin.register(ListingIso)
-class ListingIsoAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
-
-
-# Register ListingCategory Model
 @admin.register(ListingCategory)
 class ListingCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('name', 'seo_title', 'slug')
@@ -102,5 +80,4 @@ class TestimonialAdmin(ImportExportMixin, admin.ModelAdmin):
 @admin.register(Partner)
 class PartnerAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('logo',)
-
 
