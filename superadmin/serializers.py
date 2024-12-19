@@ -4,7 +4,7 @@ from listing.models import ListingCategory, Keywords, ListingBrands, Packages, O
 from products.models import ProductCategory, Product, ProductImage, ProductReviews, ProductEnquriy
 
 
-class AdminLoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True, max_length=128, style={'input_type': 'password'})
 

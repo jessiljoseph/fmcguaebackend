@@ -5,40 +5,64 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import status
+from rest_framework.authtoken.models import Token
 from listing.models import ListingCategory, Keywords, ListingBrands, Packages, Organization, \
     ListingReviews, ListingEnquiry, Advertisements, Insight
 from products.models import ProductCategory, ProductEnquriy, Product, ProductImage, ProductReviews
 from .serializers import (
-    AdminLoginSerializer, ListingCategorySerializer,
+    LoginSerializer, ListingCategorySerializer,
     KeywordsSerializer, ListingBrandsSerializer, PackagesSerializer, OrganizationSerializer, ListingReviewsSerializer,
     ListingEnquirySerializer, AdvertisementsSerializer, ProductCategorySerializer, ProductEnquirySerializer,
     ProductSerializer, ProductImageSerializer, ProductReviewsSerializer, InsightSerializer
 )
 
 
-#login logot api
-class AdminLoginView(APIView):
-    def post(self, request):
-        serializer = AdminLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
-            user = authenticate(username=username, password=password)
+class SuperAdminLoginAPIView(APIView):
+    permission_classes = [AllowAny]  
 
-            if user is not None and user.is_superuser:
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data["user"]
+            if user.is_staff:  
                 token, created = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key, 'message': 'Admin Login Successful'}, status=status.HTTP_200_OK)
-            return Response({'error': 'Unauthorized or invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {
+                        "token": token.key,
+                        "username": user.username,
+                        "email": user.email,
+                        "user_type": "superadmin",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            return Response(
+                {"detail": "You must be a superadmin."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-class AdminLogoutView(APIView):
-    authentication_classes = [TokenAuthentication]
+
+
+# Superadmin logout (common logout)
+class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        request.user.auth_token.delete()
-        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
-
+        try:
+            token = Token.objects.get(user=request.user)  # Get token for the logged-in user
+            token.delete()  # Remove the token to log the user out
+            return Response(
+                {"detail": "Successfully logged out."},
+                status=status.HTTP_200_OK,
+            )
+        except Token.DoesNotExist:
+            return Response(
+                {"detail": "Token not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 # List all ListingCategory entries
 class ListingCategoryListView(generics.ListAPIView):
