@@ -1,67 +1,84 @@
-from django.contrib.auth import authenticate
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from django.contrib.auth import login, logout
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import status
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 from listing.models import ListingCategory, Keywords, ListingBrands, Packages, Organization, \
     ListingReviews, ListingEnquiry, Advertisements, Insight
 from products.models import ProductCategory, ProductEnquriy, Product, ProductImage, ProductReviews
-from .serializers import (
+from .serializers import (UserSerializer,
     LoginSerializer, ListingCategorySerializer,
     KeywordsSerializer, ListingBrandsSerializer, PackagesSerializer, OrganizationSerializer, ListingReviewsSerializer,
     ListingEnquirySerializer, AdvertisementsSerializer, ProductCategorySerializer, ProductEnquirySerializer,
     ProductSerializer, ProductImageSerializer, ProductReviewsSerializer, InsightSerializer
 )
 
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]  # Only admins can access
+
+    def get(self, request):
+        users = User.objects.all()  # Fetch all users
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]  # Only admins can access
+
+    def get(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found"}, status=404)
 
 class SuperAdminLoginAPIView(APIView):
-    permission_classes = [AllowAny]  
+    permission_classes = [IsAdminUser]  # Only admins can log in
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.validated_data["user"]
-            if user.is_staff:  
-                token, created = Token.objects.get_or_create(user=user)
-                return Response(
-                    {
-                        "token": token.key,
-                        "username": user.username,
-                        "email": user.email,
-                        "user_type": "superadmin",
-                    },
-                    status=status.HTTP_200_OK,
-                )
+            user = serializer.validated_data['user']
+            login(request, user)  # Log the user in via session (optional if using tokens)
+            
+            # Create or retrieve the user token
+            token, created = Token.objects.get_or_create(user=user)
+            
             return Response(
-                {"detail": "You must be a superadmin."},
-                status=status.HTTP_403_FORBIDDEN,
+                {
+                    "token": token.key,
+                    "username": user.username,
+                    "email": user.email,
+                    "user_type": "admin",  # Denote the user as an admin
+                },
+                status=200,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=400)
 
-
-# Superadmin logout (common logout)
-class LogoutAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+# Superadmin Logout View
+class SuperAdminLogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]  
 
     def post(self, request):
         try:
-            token = Token.objects.get(user=request.user)  # Get token for the logged-in user
-            token.delete()  # Remove the token to log the user out
+            token = Token.objects.get(user=request.user)  
+            token.delete()  # Delete the token
+            logout(request)  # Log the user out (optional if using token auth)
+            
             return Response(
-                {"detail": "Successfully logged out."},
-                status=status.HTTP_200_OK,
+                {"message": "Successfully logged out."},
+                status=200,
             )
         except Token.DoesNotExist:
             return Response(
                 {"detail": "Token not found."},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=400,
             )
 
 # List all ListingCategory entries

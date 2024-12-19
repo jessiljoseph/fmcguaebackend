@@ -1,9 +1,7 @@
 from django.urls import path
 from django.conf.urls.static import static
-
-
 from fmcguae import settings
-from superadmin.views import SuperAdminLoginAPIView, LogoutAPIView , ListingCategoryListView, ListingCategoryCreateView, ListingCategoryUpdateView, \
+from superadmin.views import SuperAdminLoginAPIView, SuperAdminLogoutAPIView , ListingCategoryListView, ListingCategoryCreateView, ListingCategoryUpdateView, \
     ListingCategoryDeleteView, KeywordsListView, KeywordsCreateView, KeywordsDeleteView, KeywordsUpdateView, \
     ListingBrandsDeleteView, ListingBrandsListView, ListingBrandsCreateView, ListingBrandsUpdateView, \
     PackagesCreateView, PackagesListView, PackagesUpdateView, PackagesDeleteView, OrganizationListView, \
@@ -11,7 +9,7 @@ from superadmin.views import SuperAdminLoginAPIView, LogoutAPIView , ListingCate
     ListingReviewsCreateView, ListingReviewsUpdateView, ListingReviewsDeleteView, ListingEnquiryListView, \
     ListingEnquiryCreateView, ListingEnquiryUpdateView, ListingEnquiryDeleteView, AdvertisementsListView, \
     AdvertisementsCreateView, AdvertisementsUpdateView, AdvertisementsDeleteView, InsightListView, InsightCreateView, \
-    InsightUpdateView, InsightDeleteView
+    InsightUpdateView, InsightDeleteView, UserDetailView, UserListView
 from .views import (
     ProductCategoryListView, ProductCategoryCreateView, ProductCategoryUpdateView, ProductCategoryDeleteView,
     ProductListView, ProductCreateView, ProductUpdateView, ProductDeleteView,
@@ -22,7 +20,10 @@ from .views import (
 
 urlpatterns = [
     path('api/login/', SuperAdminLoginAPIView.as_view(), name='admin.login'),
-    path('api/logout/', LogoutAPIView.as_view(), name='admin.logout'),
+    path('api/logout/', SuperAdminLogoutAPIView.as_view(), name='admin.logout'),
+
+    path("users/", UserListView.as_view(), name="user-list"),
+    path("users/<int:pk>/", UserDetailView.as_view(), name="user-detail"),
 
     path('api/listing_category/list/', ListingCategoryListView.as_view(), name='admin.listing_category_list'),
     path('api/listing_category/create/', ListingCategoryCreateView.as_view(), name='admin.listing_category_create'),

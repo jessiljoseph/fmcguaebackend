@@ -2,13 +2,17 @@ from rest_framework import serializers
 from listing.models import ListingCategory, Keywords, ListingBrands, Packages, Organization, \
     ListingReviews, ListingEnquiry, Advertisements, Insight
 from products.models import ProductCategory, Product, ProductImage, ProductReviews, ProductEnquriy
+from django.contrib.auth.models import User
 
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True, max_length=128, style={'input_type': 'password'})
 
- 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined']
 
 class ListingCategorySerializer(serializers.ModelSerializer):
     class Meta:
